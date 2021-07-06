@@ -52,7 +52,10 @@ public class NetworkConnection {
                     continue;
                 }
                 
-                int msgSize = netStream.ReadByte();
+                byte[] sizeBytes = new byte[4];
+                int msgSizeBytesRead = netStream.Read(sizeBytes, 0, 4);
+
+                int msgSize = (int)BitConverter.ToUInt32(sizeBytes, 0);
 
                 if (msgSize == 0) {
                     continue;

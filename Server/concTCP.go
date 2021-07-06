@@ -3,6 +3,7 @@ package main
 import (
 	"RTSServer/proto/messages"
 	"bufio"
+	"encoding/binary"
 	"fmt"
 	"math/rand"
 	"net"
@@ -58,7 +59,9 @@ func handleConnection(c net.Conn) {
 		}
 
 		fmt.Printf("respons size %s\n", strconv.Itoa(size))
-		c.Write([]byte(strconv.Itoa(size)))
+		sizeBytes := make([]byte, 4)
+		binary.LittleEndian.PutUint32(sizeBytes, uint32(size))
+		c.Write(sizeBytes)
 		c.Write(bytes)
 	}
 	c.Close()

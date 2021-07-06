@@ -31,7 +31,7 @@ public class NetworkConnection {
     }
 
     public void SendMessage(TestMessage msg) {
-        Debug.Log("size: " + msg.CalculateSize());
+        Debug.Log("Sending message of size: " + msg.CalculateSize());
         msg.WriteTo(netStream);
     }
 
@@ -58,6 +58,11 @@ public class NetworkConnection {
                     continue;
                 }
 
+                Debug.Log($"Data available:: msgSize: {msgSize}. Reading from networkstream..");
+                
+                // TODO: For some reason the msg size we get back is 52 bytes, while the one we send is 42 bytes.
+                // on the go side the message size is logged as 42 bytes aswell. 
+                
                 var msgBuffer = new byte[msgSize];
                 netStream.Read(msgBuffer, 0, msgSize);
                 
@@ -73,6 +78,7 @@ public class NetworkConnection {
             connected = false;
             client.Close();
             netStream.Dispose();
+            throw;
         }
     }
 

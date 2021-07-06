@@ -1,6 +1,7 @@
 package main
 
 import (
+	"RTSServer/proto/messages"
 	"bufio"
 	"fmt"
 	"math/rand"
@@ -8,7 +9,7 @@ import (
 	"os"
 	"strconv"
 	"time"
-	"RTSServer/proto/messages"
+
 	"google.golang.org/protobuf/proto"
 )
 
@@ -35,7 +36,7 @@ func handleConnection(c net.Conn) {
 		if err := proto.Unmarshal(bytes[:length], tmsg); err != nil {
 			fmt.Println(err)
 		} else {
-			switch tmsg.GetPayload().(type){
+			switch tmsg.GetPayload().(type) {
 			case *messages.TestMessage_Pl1:
 				fmt.Println(tmsg.GetPl1().Msg)
 				break
@@ -56,11 +57,9 @@ func handleConnection(c net.Conn) {
 			fmt.Println(err)
 		}
 
-
 		fmt.Printf("respons size %s\n", strconv.Itoa(size))
-
 		c.Write([]byte(strconv.Itoa(size)))
-		c.Write(bytes)	
+		c.Write(bytes)
 	}
 	c.Close()
 }

@@ -33,29 +33,16 @@ public class ClientBehaviour : MonoBehaviour {
             for (int i = 0; i < 1; i++) {
                 TestMessage tmsg = new TestMessage {Number = i, Greeting = "Hello from the client!"};
 
-                switch (i) {
-                    case 0:
-                        tmsg.Pl1 = new PayLoad1() { Msg = "payload1hello!" };
-                        break;
-                    case 1:
-                        tmsg.Pl2 = new PayLoad2() { Number = 111 };
-                        break;
-                    case 2:
-                        tmsg.Pl3 = new PayLoad3() { Percent = 0.90f };
-                        break;
-                    case 3:
-                        tmsg.Pl1 = new PayLoad1() { Msg = "payload1hello again!" };
-                        break;
-                    case 4:
-                        tmsg.Pl3 = new PayLoad3() { Percent = 0.1f };
-                        break;
-                }
+                tmsg.Pl1 = i switch {
+                    0 => new PayLoad1() {Msg = "payload1hello!"},
+                    _ => tmsg.Pl1
+                };
 
                 networkConnection.SendMessage(tmsg);
             }
         }
 
-        //Debug.Log($"Connected: {networkConnection.connected} MessageQueueCount: {networkConnection.MessageQueue.Count}");
+        Debug.Log($"Connected: {networkConnection.connected} MessageQueueCount: {networkConnection.MessageQueue.Count}");
         if (networkConnection.connected && networkConnection.MessageQueue.TryDequeue(out TestMessage msg)) {
             switch (msg.PayloadCase) {
                 case TestMessage.PayloadOneofCase.Pl1:
@@ -78,13 +65,11 @@ public class ClientBehaviour : MonoBehaviour {
         client = new TcpClient(server, port);
         stream = client.GetStream();
 
-        for (int i = 0; i < 5; i++) {
+        for (int i = 0; i < 3; i++) {
             yield return new WaitForSeconds(0.5f);
             string msg = "message" + i + "\n";
 
-            TestMessage tmsg = new TestMessage();
-            tmsg.Number = i;
-            tmsg.Greeting = "Hello from the client!";
+            TestMessage tmsg = new TestMessage {Number = i, Greeting = $"Msg {i} from the client::"};
 
             switch (i) {
                 case 0:
@@ -95,12 +80,6 @@ public class ClientBehaviour : MonoBehaviour {
                     break;
                 case 2:
                     tmsg.Pl3 = new PayLoad3() { Percent = 0.90f };
-                    break;
-                case 3:
-                    tmsg.Pl1 = new PayLoad1() { Msg = "payload1hello again!" };
-                    break;
-                case 4:
-                    tmsg.Pl3 = new PayLoad3() { Percent = 0.1f };
                     break;
             }
 

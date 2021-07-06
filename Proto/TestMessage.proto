@@ -1,0 +1,27 @@
+syntax = "proto3";
+
+option csharp_namespace = "Networking.Messages";
+option go_package = "proto/messages";
+
+message TestMessage {
+  string greeting = 1;
+  int32 number = 2;
+
+  oneof payload {
+  	PayLoad1 pl1 = 3;
+  	PayLoad2 pl2 = 4;
+  	PayLoad3 pl3 = 5;
+  }
+}
+
+message PayLoad1 {
+	string msg = 1;
+}
+
+message PayLoad2 {
+	int32 number = 1;
+}
+
+message PayLoad3 {
+	float percent = 1;
+}
